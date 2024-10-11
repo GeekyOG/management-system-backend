@@ -44,12 +44,10 @@ exports.addSale = async (req, res) => {
       const updatedSerialNumbers = JSON.parse(product.serial_numbers).filter(
         (sn) => sn !== serial_number
       );
-      const updatedQuantity = product.serial_numbers.length - 1;
 
       // Update product
       await product.update({
         serial_numbers: updatedSerialNumbers,
-        quantity: updatedQuantity,
       });
 
       // Add the sale item
@@ -194,7 +192,6 @@ exports.updateSale = async (req, res) => {
               ...JSON.parse(product.serial_numbers),
               serial_number,
             ],
-            quantity: product.quantity + 1,
           });
         }
       }
