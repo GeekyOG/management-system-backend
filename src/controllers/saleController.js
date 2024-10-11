@@ -347,6 +347,23 @@ exports.findProductBySerialNumber = async (req, res) => {
       where: {
         serial_number: serialNumber, // Search by exact serial number
       },
+      include: [
+        {
+          model: Sale,
+          include: [
+            {
+              model: Customer,
+              attributes: ["first_name", "last_name", "email", "phone_number"],
+            },
+          ],
+          attributes: ["id", "total_amount", "total_paid", "status"], // Include relevant sale fields
+        },
+        {
+          model: Product,
+          include: [Vendor],
+          attributes: ["product_name", "sales_price", "serial_numbers"],
+        },
+      ],
     });
 
     if (saleItem) {
