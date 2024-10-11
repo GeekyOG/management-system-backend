@@ -12,6 +12,11 @@ router.get(
   countController.getTotals
 );
 
-router.get("/financial-summary", countController.getFinancialSummary);
+router.get(
+  "/financial-summary",
+  auth,
+  permissionsMiddleware("view_reports"),
+  countController.getFinancialSummary
+);
 
 module.exports = router;

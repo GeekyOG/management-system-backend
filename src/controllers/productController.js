@@ -158,25 +158,56 @@ exports.getSerialNumbersByProductName = async (req, res) => {
   const { product_name } = req.params; // Extract product name from URL parameters
 
   try {
-    // Find the product by name
-    const product = await Product.findOne({ where: { product_name } });
+    // Find all products by name
+    const products = await Product.findAll({ where: { product_name } });
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+    if (products.length === 0) {
+      return res.status(404).json({ message: "Products not found" });
     }
 
-    // Extract serial numbers and productId
-    const serialNumbers = JSON.parse(product.serial_numbers).map(
-      (serial_number) => ({
+    // Map through all found products to extract serial numbers and productId
+    const serialNumbers = products.flatMap((product) => {
+      return JSON.parse(product.serial_numbers).map((serial_number) => ({
         serial_number,
         productId: product.id,
-      })
-    );
+      }));
+    });
 
     return res.status(200).json(serialNumbers);
   } catch (error) {
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.getAllVendorProducts = async (req, res) => {
+  const { vendorId } = req.params;
+
+  try {
+    const products = await Product.findAll({
+      where: { vendorId },
+      order: [["id", "DESC"]],
+      include: [
+        { model: Category, attributes: ["name"] },
+        { model: Subcategory, attributes: ["name"] },
+        {
+          model: Vendor,
+          as: "Vendor",
+          attributes: ["first_name", "last_name", "email", "phone_number"],
+        },
+      ],
+    });
+
+    if (!products.length) {
+      return res
+        .status(404)
+        .json({ message: "No products found for this vendor" });
+    }
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching products for vendor" });
   }
 };

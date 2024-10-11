@@ -268,3 +268,34 @@ exports.deleteSale = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
+
+exports.getAllCustomerSales = async (req, res) => {
+  const { customerId } = req.params;
+
+  try {
+    const saleItems = await SaleItem.findAll({
+      include: [
+        {
+          model: Sale,
+          where: { customerId },
+          attributes: ["id", "total_amount", "total_paid", "status"], // Include relevant sale fields
+        },
+        {
+          model: Product,
+          attributes: ["product_name", "sales_price", "serial_numbers"],
+        },
+      ],
+    });
+
+    if (!saleItems.length) {
+      return res
+        .status(404)
+        .json({ message: "No sale items found for this customer" });
+    }
+
+    res.json(saleItems);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching sale items for customer" });
+  }
+};

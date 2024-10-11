@@ -29,6 +29,8 @@ router.get(
   saleController.getSaleById
 );
 
+router.get("/:customerId/customer", saleController.getAllCustomerSales);
+
 // Update a sale
 router.put(
   "/:id",

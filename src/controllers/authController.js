@@ -5,16 +5,24 @@ require("dotenv").config();
 
 // Register a new user
 exports.register = async (req, res) => {
-  const { firstname, lastname, email, phone_number, business_name, password } =
-    req.body;
+  const {
+    firstname,
+    lastname,
+    email,
+    phone_number,
+    business_name,
+    password,
+    roleId,
+  } = req.body;
 
   if (
-    !firstname ||
-    !lastname ||
-    !email ||
-    !phone_number ||
-    !business_name ||
-    !password
+    (!firstname ||
+      !lastname ||
+      !email ||
+      !phone_number ||
+      !business_name ||
+      !password,
+    !roleId)
   ) {
     return res.status(400).json({ message: "All fields are required." });
   }
@@ -36,6 +44,7 @@ exports.register = async (req, res) => {
       email,
       phone_number,
       business_name,
+      roleId,
       password: hashedPassword,
     });
 

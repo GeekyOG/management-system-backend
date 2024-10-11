@@ -32,6 +32,14 @@ router.get(
   productController.getProductById
 );
 
+router.get(
+  "/:vendorId/products",
+  auth,
+  permissionsMiddleware("read_product"),
+
+  productController.getAllVendorProducts
+);
+
 // Update a product by ID
 router.put(
   "/:id",
