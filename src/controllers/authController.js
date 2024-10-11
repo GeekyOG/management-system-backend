@@ -1,6 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Role = require("../models/Role");
+const Permission = require("../models/Permission");
+
 require("dotenv").config();
 
 // Register a new user
@@ -84,6 +87,11 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password." });
     }
 
+    const role = await Role.findOne({
+      where: { id: user.roleId },
+      include: [{ model: Permission, as: "Permissions" }],
+    });
+
     // Create a JWT token
     const token = jwt.sign(
       {
@@ -96,7 +104,9 @@ exports.login = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    return res.status(200).json({ message: "Login successful", token, user });
+    return res
+      .status(200)
+      .json({ message: "Login successful", token, user, role });
   } catch (error) {
     return res.status(500).json({ message: "Server error: " + error.message });
   }

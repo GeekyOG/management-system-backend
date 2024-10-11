@@ -5,6 +5,7 @@ const Customer = require("../models/Customer");
 const Category = require("../models/Category");
 const Subcategory = require("../models/Subcategory");
 const Vendor = require("../models/Vendor");
+const { Op } = require("sequelize");
 
 // Add a new sale
 exports.addSale = async (req, res) => {
@@ -275,6 +276,12 @@ exports.getAllCustomerSales = async (req, res) => {
         {
           model: Sale,
           where: { customerId },
+          include: [
+            {
+              model: Customer,
+              attributes: ["first_name", "last_name", "email", "phone_number"],
+            },
+          ],
           attributes: ["id", "total_amount", "total_paid", "status"], // Include relevant sale fields
         },
         {
@@ -294,5 +301,74 @@ exports.getAllCustomerSales = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching sale items for customer" });
+  }
+};
+
+// Search for a product containing the serial number
+exports.findProductBySerialNumber = async (req, res) => {
+  const { serialNumber } = req.params;
+
+  let fetchedProduct = null;
+  let fetchedSaleItem = null;
+
+  try {
+    // Check if the serial number exists in the product's serial_numbers array
+    const products = await Product.findAll({
+      include: [
+        { model: Category, attributes: ["name"] },
+        { model: Subcategory, attributes: ["name"] },
+        {
+          model: Vendor,
+          attributes: ["first_name", "last_name", "email", "phone_number"],
+        },
+      ],
+    });
+    if (products) {
+      fetchedProduct = products;
+    }
+
+    let singleProduct = null;
+
+    if (products) {
+      const matchingProduct = products.find((product) => {
+        // Parse the serial_numbers and check if the serialNumber exists
+        const serialNumbers = JSON.parse(product.serial_numbers);
+        return serialNumbers.includes(serialNumber);
+      });
+
+      // If a matching product is found, return its full details
+      if (matchingProduct) {
+        singleProduct = matchingProduct;
+      }
+    }
+
+    // Check if the serial number exists in SaleItem's serial_number field
+    const saleItem = await SaleItem.findOne({
+      where: {
+        serial_number: serialNumber, // Search by exact serial number
+      },
+    });
+
+    if (saleItem) {
+      fetchedSaleItem = saleItem;
+    }
+
+    // If neither product nor sale item is found, return a 404
+    if (!fetchedProduct && !fetchedSaleItem) {
+      return res.status(404).json({
+        message: "No product or sale item found with that serial number.",
+      });
+    }
+
+    // Return both product and saleItem (whichever is found)
+    return res.status(200).json({
+      product: singleProduct,
+      saleItem: fetchedSaleItem,
+    });
+  } catch (error) {
+    console.error("Error searching for product or sale item:", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
   }
 };

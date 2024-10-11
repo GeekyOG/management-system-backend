@@ -39,8 +39,9 @@ router.put(
   saleController.updateSale
 );
 
-// Update sale status
-// router.put("/status/:id", saleController.updateSaleStatus);
+// getProduct by serial number
+
+router.get("/:serialNumber/product", saleController.findProductBySerialNumber);
 
 // Delete a sale
 router.delete(
