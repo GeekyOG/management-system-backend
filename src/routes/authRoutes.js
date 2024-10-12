@@ -2,6 +2,7 @@ const express = require("express");
 const userController = require("../controllers/authController");
 
 const router = express.Router();
+router.use(enforceMultiTenancy);
 
 // Register route
 router.post("/register", userController.register);
