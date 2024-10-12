@@ -4,6 +4,8 @@ const User = require("../models/User");
 const Role = require("../models/Role");
 const Permission = require("../models/Permission");
 const nodemailer = require("nodemailer");
+const User = require("../models/User");
+const Business = require("../models/Business");
 
 require("dotenv").config();
 
@@ -337,6 +339,67 @@ exports.logout = async (req, res) => {
     await user.save();
 
     return res.status(200).json({ message: "Logout successful." });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error: " + error.message });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  const {
+    firstname,
+    lastname,
+    email,
+    phoneNumber,
+    businessName,
+    businessAddress,
+    businessEmail,
+    businessPhone,
+  } = req.body;
+
+  // Ensure user is authenticated and has access to their business
+  const userId = req.user.id;
+  const businessId = req.user.businessId;
+
+  try {
+    // Find the user by userId and the business by businessId
+    const user = await User.findOne({ where: { id: userId, businessId } });
+    const business = await Business.findOne({ where: { id: businessId } });
+
+    if (!user || !business) {
+      return res.status(404).json({ message: "User or business not found." });
+    }
+
+    // Update user details
+    user.firstname = firstname || user.firstname;
+    user.lastname = lastname || user.lastname;
+    user.email = email || user.email;
+    user.phoneNumber = phoneNumber || user.phoneNumber;
+
+    // Update business details
+    business.businessName = businessName || business.businessName;
+    business.businessAddress = businessAddress || business.businessAddress;
+    business.email = businessEmail || business.email;
+    business.phone = businessPhone || business.phone;
+
+    // Save the changes to both user and business
+    await user.save();
+    await business.save();
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      },
+      business: {
+        businessName: business.businessName,
+        businessAddress: business.businessAddress,
+        businessEmail: business.email,
+        businessPhone: business.phone,
+      },
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server error: " + error.message });
   }
