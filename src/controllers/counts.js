@@ -75,8 +75,8 @@ exports.getFinancialSummary = async (req, res) => {
     const totalPaidResult = await Sale.sum("total_paid", {
       where: { status: "pending" },
     });
-    const totalPendingPayments =
-      (totalPendingPaymentsResult || 0) - (totalPaidResult || 0);
+    const totalPendingPayments = totalPaidResult;
+    // (totalPendingPaymentsResult || 0) - (totalPaidResult || 0);
 
     // Send the summary back
     return res.status(200).json({

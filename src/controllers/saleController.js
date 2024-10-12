@@ -114,13 +114,20 @@ exports.getSaleById = async (req, res) => {
   try {
     const saleItems = await SaleItem.findAll({
       where: { saleId: id },
+      order: [["id", "DESC"]],
       include: [
         {
           model: Sale,
           include: [
             {
               model: Customer,
-              attributes: ["first_name", "last_name", "email", "phone_number"],
+              attributes: [
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "phone_number",
+              ],
             },
           ],
         },
@@ -131,7 +138,13 @@ exports.getSaleById = async (req, res) => {
             { model: Subcategory, attributes: ["name"] },
             {
               model: Vendor,
-              attributes: ["first_name", "last_name", "email", "phone_number"],
+              attributes: [
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "phone_number",
+              ],
             },
           ],
         },
@@ -279,7 +292,13 @@ exports.getAllCustomerSales = async (req, res) => {
           include: [
             {
               model: Customer,
-              attributes: ["first_name", "last_name", "email", "phone_number"],
+              attributes: [
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "phone_number",
+              ],
             },
           ],
           attributes: ["id", "total_amount", "total_paid", "status"], // Include relevant sale fields
@@ -319,7 +338,13 @@ exports.findProductBySerialNumber = async (req, res) => {
         { model: Subcategory, attributes: ["name"] },
         {
           model: Vendor,
-          attributes: ["first_name", "last_name", "email", "phone_number"],
+          attributes: [
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone_number",
+          ],
         },
       ],
     });
@@ -353,7 +378,13 @@ exports.findProductBySerialNumber = async (req, res) => {
           include: [
             {
               model: Customer,
-              attributes: ["first_name", "last_name", "email", "phone_number"],
+              attributes: [
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "phone_number",
+              ],
             },
           ],
           attributes: ["id", "total_amount", "total_paid", "status"], // Include relevant sale fields
@@ -361,7 +392,7 @@ exports.findProductBySerialNumber = async (req, res) => {
         {
           model: Product,
           include: [Vendor],
-          attributes: ["product_name", "sales_price", "serial_numbers"],
+          attributes: ["id", "product_name", "sales_price", "serial_numbers"],
         },
       ],
     });
