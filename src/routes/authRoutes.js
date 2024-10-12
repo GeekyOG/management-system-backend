@@ -15,4 +15,6 @@ router.post("/forgot-password", userController.forgotPassword);
 // Reset password route
 router.post("/reset-password", userController.resetPassword);
 
+// Update user and business details route
+router.put("/update-profile", authMiddleware, userController.updateProfile);
 module.exports = router;
