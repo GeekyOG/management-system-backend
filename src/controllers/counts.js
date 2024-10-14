@@ -11,9 +11,9 @@ exports.getTotals = async (req, res) => {
     const totalProducts = await Product.count();
     const totalCustomers = await Customer.count();
 
-    const totalReturnedResult = await Sale.sum("total_amount", {
+    const totalReturnedResult = await Sale({
       where: { status: "returned" },
-    });
+    }).count();
 
     return res.status(200).json({
       totalSales,
