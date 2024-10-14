@@ -13,13 +13,13 @@ exports.getTotals = async (req, res) => {
 
     const totalReturnedResult = await Sale({
       where: { status: "returned" },
-    }).count();
+    });
 
     return res.status(200).json({
       totalSales,
       totalProducts,
       totalCustomers,
-      totalReturnedResult,
+      totalReturnedResult: totalReturnedResult.length,
     });
   } catch (error) {
     return res
