@@ -19,7 +19,6 @@ exports.getTotals = async (req, res) => {
       totalSales,
       totalProducts,
       totalCustomers,
-      totalReturnedResult: totalReturnedResult.length,
     });
   } catch (error) {
     return res
