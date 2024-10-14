@@ -11,10 +11,15 @@ exports.getTotals = async (req, res) => {
     const totalProducts = await Product.count();
     const totalCustomers = await Customer.count();
 
+    const totalReturnedResult = await Sale.sum("total_amount", {
+      where: { status: "returned" },
+    });
+
     return res.status(200).json({
       totalSales,
       totalProducts,
       totalCustomers,
+      totalReturnedResult,
     });
   } catch (error) {
     return res
@@ -72,11 +77,12 @@ exports.getFinancialSummary = async (req, res) => {
     const totalPendingPaymentsResult = await Sale.sum("total_amount", {
       where: { status: "pending" },
     });
+
     const totalPaidResult = await Sale.sum("total_paid", {
       where: { status: "pending" },
     });
-    const totalPendingPayments = totalPaidResult;
-    // (totalPendingPaymentsResult || 0) - (totalPaidResult || 0);
+    const totalPendingPayments =
+      (totalPendingPaymentsResult || 0) - (totalPaidResult || 0);
 
     // Send the summary back
     return res.status(200).json({

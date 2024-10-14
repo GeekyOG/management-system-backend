@@ -10,13 +10,6 @@ Subcategory.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    categoryId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Category,
-        key: "id",
-      },
-    },
   },
   {
     sequelize,

@@ -7,8 +7,7 @@ const Vendor = require("../models/Vendor");
 exports.addProduct = async (req, res) => {
   const {
     product_name,
-    categoryId,
-    subcategoryId,
+    size,
     quantity,
     purchase_amount,
     sales_price,
@@ -20,8 +19,7 @@ exports.addProduct = async (req, res) => {
     // Create the product
     const newProduct = await Product.create({
       product_name,
-      categoryId,
-      subcategoryId,
+      size,
       quantity,
       purchase_amount,
       sales_price,
@@ -45,8 +43,6 @@ exports.getProducts = async (req, res) => {
     const products = await Product.findAll({
       order: [["id", "DESC"]],
       include: [
-        { model: Category, attributes: ["name"] },
-        { model: Subcategory, attributes: ["name"] },
         {
           model: Vendor,
           attributes: ["first_name", "last_name", "email", "phone_number"],
@@ -69,8 +65,6 @@ exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findByPk(id, {
       include: [
-        { model: Category, attributes: ["name"] },
-        { model: Subcategory, attributes: ["name"] },
         {
           model: Vendor,
           attributes: ["first_name", "last_name", "email", "phone_number"],
@@ -95,8 +89,7 @@ exports.updateProduct = async (req, res) => {
   const { id } = req.params;
   const {
     product_name,
-    categoryId,
-    subcategoryId,
+    size,
     quantity,
     purchase_amount,
     sales_price,
@@ -113,8 +106,7 @@ exports.updateProduct = async (req, res) => {
 
     await product.update({
       product_name,
-      categoryId,
-      subcategoryId,
+      size,
       quantity,
       purchase_amount,
       sales_price,
@@ -189,8 +181,6 @@ exports.getAllVendorProducts = async (req, res) => {
       where: { vendorId },
       order: [["id", "DESC"]],
       include: [
-        { model: Category, attributes: ["name"] },
-        { model: Subcategory, attributes: ["name"] },
         {
           model: Vendor,
           as: "Vendor",

@@ -24,6 +24,7 @@ Sale.init(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+
     status: {
       type: DataTypes.ENUM("completed", "pending", "returned", "borrowed"),
       defaultValue: "pending",

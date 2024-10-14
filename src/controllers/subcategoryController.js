@@ -20,7 +20,6 @@ exports.getSubcategories = async (req, res) => {
   try {
     const subcategories = await Subcategory.findAll({
       order: [["id", "DESC"]],
-      include: [{ model: Category, attributes: ["name"] }],
     });
     return res.status(200).json(subcategories);
   } catch (error) {
@@ -35,9 +34,7 @@ exports.getSubcategoryById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const subcategory = await Subcategory.findByPk(id, {
-      include: [{ model: Category, attributes: ["name"] }],
-    });
+    const subcategory = await Subcategory.findByPk(id, {});
 
     if (!subcategory) {
       return res.status(404).json({ message: "Subcategory not found" });

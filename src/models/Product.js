@@ -15,6 +15,10 @@ const Product = sequelize.define("Product", {
   },
   sales_price: {
     type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  size: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   serial_numbers: {

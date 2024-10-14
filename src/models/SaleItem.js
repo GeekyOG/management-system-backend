@@ -35,6 +35,10 @@ const SaleItem = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    size: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,

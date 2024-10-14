@@ -28,13 +28,10 @@ Permission.belongsToMany(Role, {
 Permission.hasMany(RoleHasPermission, { foreignKey: "permissionId" });
 RoleHasPermission.belongsTo(Role, { foreignKey: "roleId" });
 RoleHasPermission.belongsTo(Permission, { foreignKey: "permissionId" });
-Product.belongsTo(Category, { foreignKey: "categoryId" });
-Product.belongsTo(Subcategory, { foreignKey: "subcategoryId" });
 Product.belongsTo(Vendor, { foreignKey: "vendorId" });
 Sale.belongsTo(Customer, { foreignKey: "customerId" });
 SaleItem.belongsTo(Sale, { foreignKey: "saleId" });
 SaleItem.belongsTo(Product, { foreignKey: "productId" });
-Subcategory.belongsTo(Category, { foreignKey: "categoryId" });
 User.belongsTo(Role, { foreignKey: "roleId" });
 Role.hasMany(User, { foreignKey: "roleId" });
 // Export models for use in other parts of the app

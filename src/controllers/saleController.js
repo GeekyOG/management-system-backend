@@ -30,7 +30,7 @@ exports.addSale = async (req, res) => {
     });
 
     for (let item of items) {
-      const { productId, serial_number, amount, amount_paid } = item;
+      const { productId, serial_number, amount, amount_paid, size } = item;
 
       // Find the product
       const product = await Product.findByPk(productId);
@@ -58,6 +58,7 @@ exports.addSale = async (req, res) => {
         serial_number,
         amount,
         amount_paid,
+        size,
       });
     }
 
@@ -87,8 +88,6 @@ exports.getSales = async (req, res) => {
         {
           model: Product,
           include: [
-            { model: Category, attributes: ["name"] },
-            { model: Subcategory, attributes: ["name"] },
             {
               model: Vendor,
               attributes: ["first_name", "last_name", "email", "phone_number"],
@@ -134,8 +133,6 @@ exports.getSaleById = async (req, res) => {
         {
           model: Product,
           include: [
-            { model: Category, attributes: ["name"] },
-            { model: Subcategory, attributes: ["name"] },
             {
               model: Vendor,
               attributes: [
@@ -187,6 +184,37 @@ exports.updateSale = async (req, res) => {
     // Fetch all existing sale items for the current sale
     const existingSaleItems = await SaleItem.findAll({ where: { saleId: id } });
 
+    // Collect existing sale item serial numbers
+    const existingSerialNumbers = existingSaleItems.map(
+      (item) => item.serial_number
+    );
+
+    // Collect new serial numbers from the request items
+    const updatedSerialNumbers = items.map((item) => item.serial_number);
+
+    // Find serial numbers that are in existing items but not in the updated items
+    const serialNumbersToRestore = existingSerialNumbers.filter(
+      (serial_number) => !updatedSerialNumbers.includes(serial_number)
+    );
+
+    // Restore these serial numbers to the respective products
+    for (const serial_number of serialNumbersToRestore) {
+      const saleItem = existingSaleItems.find(
+        (item) => item.serial_number === serial_number
+      );
+      if (saleItem) {
+        const product = await Product.findByPk(saleItem.productId);
+        if (product) {
+          await product.update({
+            serial_numbers: [
+              ...JSON.parse(product.serial_numbers),
+              serial_number,
+            ],
+          });
+        }
+      }
+    }
+
     // Iterate over the sale items and update or create them as necessary
     const saleItemsPromises = items.map(async (item) => {
       const {
@@ -195,6 +223,7 @@ exports.updateSale = async (req, res) => {
         serial_number,
         amount,
         amount_paid,
+        size,
       } = item;
 
       // If the status is "returned", restore serial numbers to the product
@@ -220,6 +249,7 @@ exports.updateSale = async (req, res) => {
             serial_number,
             amount,
             amount_paid,
+            size,
           });
         }
       }
@@ -231,6 +261,7 @@ exports.updateSale = async (req, res) => {
         serial_number,
         amount,
         amount_paid,
+        size,
       });
     });
 
@@ -334,8 +365,6 @@ exports.findProductBySerialNumber = async (req, res) => {
     // Check if the serial number exists in the product's serial_numbers array
     const products = await Product.findAll({
       include: [
-        { model: Category, attributes: ["name"] },
-        { model: Subcategory, attributes: ["name"] },
         {
           model: Vendor,
           attributes: [
