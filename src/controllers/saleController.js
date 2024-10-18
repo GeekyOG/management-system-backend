@@ -9,8 +9,15 @@ const { Op } = require("sequelize");
 
 // Add a new sale
 exports.addSale = async (req, res) => {
-  const { customerId, items, total_amount, total_paid, invoiceNumber, date } =
-    req.body;
+  const {
+    customerId,
+    items,
+    total_amount,
+    total_paid,
+    invoiceNumber,
+    date,
+    check,
+  } = req.body;
 
   try {
     // Validate customer exists
@@ -20,7 +27,11 @@ exports.addSale = async (req, res) => {
     }
 
     // Determine sale status based on payment
-    let status = total_paid === total_amount ? "completed" : "pending";
+    let status = check
+      ? "borrowed"
+      : total_paid === total_amount
+      ? "completed"
+      : "pending";
 
     // Create the sale record with the appropriate status
     const sale = await Sale.create({

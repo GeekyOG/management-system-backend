@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const Sale = require("../models/Sale"); // Assuming Sale is your Sale model
 const SaleItem = require("../models/SaleItem");
 const Product = require("../models/Product");
+const Customer = require("../models/Customer");
 
 // Helper function to calculate total profit based on time range
 const calculateProfit = async (startDate, endDate) => {
@@ -12,7 +13,16 @@ const calculateProfit = async (startDate, endDate) => {
       },
     },
     include: [
-      { model: Sale, where: { status: "completed" } },
+      {
+        model: Sale,
+        where: { status: "completed" },
+        include: [
+          {
+            model: Customer,
+            attributes: ["first_name", "last_name", "email", "phone_number"],
+          },
+        ],
+      },
       { model: Product },
     ],
   });
@@ -24,7 +34,7 @@ const calculateProfit = async (startDate, endDate) => {
     return acc + profitPerItem;
   }, 0);
 
-  return totalProfit;
+  return { totalProfit, sales };
 };
 
 exports.getProfit = async (req, res) => {
