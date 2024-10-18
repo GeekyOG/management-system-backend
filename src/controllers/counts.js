@@ -11,10 +11,17 @@ exports.getTotals = async (req, res) => {
     const totalProducts = await Product.count();
     const totalCustomers = await Customer.count();
 
+    const returnedSalesCount = await Sale.count({
+      where: {
+        status: "returned",
+      },
+    });
+
     return res.status(200).json({
       totalSales,
       totalProducts,
       totalCustomers,
+      returnedSalesCount,
     });
   } catch (error) {
     return res

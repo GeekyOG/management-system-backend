@@ -15,7 +15,10 @@ Sale.init(
         key: "id",
       },
     },
-
+    invoiceNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     total_amount: {
       type: DataTypes.FLOAT,
       allowNull: false,

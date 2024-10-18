@@ -9,7 +9,8 @@ const { Op } = require("sequelize");
 
 // Add a new sale
 exports.addSale = async (req, res) => {
-  const { customerId, items, total_amount, total_paid } = req.body;
+  const { customerId, items, total_amount, total_paid, invoiceNumber, date } =
+    req.body;
 
   try {
     // Validate customer exists
@@ -23,10 +24,12 @@ exports.addSale = async (req, res) => {
 
     // Create the sale record with the appropriate status
     const sale = await Sale.create({
+      invoiceNumber,
       customerId,
       total_amount,
       total_paid,
       status,
+      createdAt: date && date.trim() !== "" ? new Date(date) : new Date(),
     });
 
     for (let item of items) {
@@ -59,6 +62,7 @@ exports.addSale = async (req, res) => {
         amount,
         amount_paid,
         size,
+        createdAt: new Date(date),
       });
     }
 
@@ -74,7 +78,7 @@ exports.addSale = async (req, res) => {
 exports.getSales = async (req, res) => {
   try {
     const sales = await SaleItem.findAll({
-      order: [["id", "DESC"]],
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Sale,
@@ -113,7 +117,7 @@ exports.getSaleById = async (req, res) => {
   try {
     const saleItems = await SaleItem.findAll({
       where: { saleId: id },
-      order: [["id", "DESC"]],
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Sale,
@@ -163,7 +167,15 @@ exports.getSaleById = async (req, res) => {
 // Update a sale
 exports.updateSale = async (req, res) => {
   const { id } = req.params; // saleId
-  const { customerId, items, total_amount, total_paid, status } = req.body;
+  const {
+    customerId,
+    items,
+    total_amount,
+    total_paid,
+    status,
+    invoiceNumber,
+    date,
+  } = req.body;
 
   try {
     // Find the sale by its ID
@@ -178,8 +190,22 @@ exports.updateSale = async (req, res) => {
         .json({ message: "Cannot update returned product" });
     }
 
+    // Prepare updated sale data
+    const updatedSaleData = {
+      customerId,
+      total_amount,
+      total_paid,
+      status,
+      invoiceNumber,
+    };
+
+    // Update createdAt only if date is provided
+    if (date) {
+      updatedSaleData.createdAt = new Date(date);
+    }
+
     // Update the sale details
-    await sale.update({ customerId, total_amount, total_paid, status });
+    await sale.update(updatedSaleData);
 
     // Fetch all existing sale items for the current sale
     const existingSaleItems = await SaleItem.findAll({ where: { saleId: id } });
@@ -239,29 +265,33 @@ exports.updateSale = async (req, res) => {
         }
       }
 
+      // Prepare updated sale item data
+      const updatedSaleItemData = {
+        productId,
+        serial_number,
+        amount,
+        amount_paid,
+        size,
+      };
+
+      // Update createdAt only if date is provided
+      if (date) {
+        updatedSaleItemData.createdAt = new Date(date);
+      }
+
       if (saleItemId) {
         // Check if the SaleItem exists
         const existingSaleItem = await SaleItem.findByPk(saleItemId);
         if (existingSaleItem) {
           // If it exists, update the SaleItem
-          return existingSaleItem.update({
-            productId,
-            serial_number,
-            amount,
-            amount_paid,
-            size,
-          });
+          return existingSaleItem.update(updatedSaleItemData);
         }
       }
 
       // If SaleItem does not exist (or saleItemId is not provided), create a new one
       return SaleItem.create({
         saleId: sale.id,
-        productId,
-        serial_number,
-        amount,
-        amount_paid,
-        size,
+        ...updatedSaleItemData,
       });
     });
 
