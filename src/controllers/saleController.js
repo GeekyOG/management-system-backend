@@ -29,7 +29,7 @@ exports.addSale = async (req, res) => {
     // Determine sale status based on payment
     let status = check
       ? "borrowed"
-      : total_paid === total_amount
+      : parseInt(total_paid) === parseInt(total_amount)
       ? "completed"
       : "pending";
 

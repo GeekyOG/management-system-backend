@@ -106,3 +106,30 @@ exports.getProfit = async (req, res) => {
       .json({ message: "Server error", error: error.message });
   }
 };
+
+exports.getAllPending = async (req, res) => {
+  try {
+    const sales = await SaleItem.findAll({
+      include: [
+        {
+          model: Sale,
+          where: { status: "pending" },
+          include: [
+            {
+              model: Customer,
+              attributes: ["first_name", "last_name", "email", "phone_number"],
+            },
+          ],
+        },
+        { model: Product },
+      ],
+    });
+    return res.status(200).json({
+      sales,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
