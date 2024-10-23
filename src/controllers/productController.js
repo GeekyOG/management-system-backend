@@ -2,6 +2,7 @@ const Product = require("../models/Product");
 const Category = require("../models/Category");
 const Subcategory = require("../models/Subcategory");
 const Vendor = require("../models/Vendor");
+const sequelize = require("../config/database");
 
 // Add a new product
 exports.addProduct = async (req, res) => {
@@ -26,7 +27,7 @@ exports.addProduct = async (req, res) => {
       sales_price,
       vendorId,
       serial_numbers,
-      createdAt: date && date.trim() !== "" ? new Date(date) : new Date(),
+      date: date && date.trim() !== "" ? new Date(date) : new Date(),
     });
 
     return res
@@ -97,6 +98,7 @@ exports.updateProduct = async (req, res) => {
     sales_price,
     vendorId,
     serial_numbers,
+    date,
   } = req.body;
 
   try {
@@ -114,6 +116,7 @@ exports.updateProduct = async (req, res) => {
       sales_price,
       vendorId,
       serial_numbers,
+      date,
     });
 
     return res

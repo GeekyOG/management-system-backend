@@ -32,7 +32,14 @@ Sale.init(
       type: DataTypes.ENUM("completed", "pending", "returned", "borrowed"),
       defaultValue: "pending",
     },
+
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
+
   {
     sequelize,
     modelName: "Sale",

@@ -40,7 +40,7 @@ exports.addSale = async (req, res) => {
       total_amount,
       total_paid,
       status,
-      createdAt: date && date.trim() !== "" ? new Date(date) : new Date(),
+      date: date && date.trim() !== "" ? new Date(date) : new Date(),
     });
 
     for (let item of items) {
@@ -212,7 +212,7 @@ exports.updateSale = async (req, res) => {
 
     // Update createdAt only if date is provided
     if (date) {
-      updatedSaleData.createdAt = new Date(date);
+      updatedSaleData.date = new Date(date);
     }
 
     // Update the sale details

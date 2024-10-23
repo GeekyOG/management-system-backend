@@ -85,6 +85,7 @@ exports.getFinancialSummary = async (req, res) => {
     });
     const totalPendingPayments =
       (totalPendingPaymentsResult || 0) - (totalPaidResult || 0);
+      
 
     // Send the summary back
     return res.status(200).json({
