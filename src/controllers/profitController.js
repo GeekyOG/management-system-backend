@@ -7,15 +7,16 @@ const Customer = require("../models/Customer");
 // Helper function to calculate total profit based on time range
 const calculateProfit = async (startDate, endDate) => {
   const sales = await SaleItem.findAll({
-    where: {
-      createdAt: {
-        [Op.between]: [startDate, endDate],
-      },
-    },
     include: [
       {
         model: Sale,
-        where: { status: "completed" },
+        order: [["date", "ASC"]],
+        where: {
+          status: "completed",
+          date: {
+            [Op.between]: [startDate, endDate],
+          },
+        },
         include: [
           {
             model: Customer,
@@ -43,13 +44,19 @@ exports.getProfit = async (req, res) => {
   try {
     let start, end;
 
+    const convertToUTC = (date) => {
+      return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    };
+
     // Determine date range based on the filter
     switch (filter) {
       case "day":
         start = new Date();
         start.setHours(0, 0, 0, 0); // Start of the day
+        start = convertToUTC(start);
         end = new Date();
         end.setHours(23, 59, 59, 999); // End of the day
+        end = convertToUTC(end);
         break;
 
       case "week":

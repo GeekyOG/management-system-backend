@@ -32,6 +32,11 @@ Sale.init(
       type: DataTypes.ENUM("completed", "pending", "returned", "borrowed"),
       defaultValue: "pending",
     },
+    soldBy: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Samuel Udi",
+    },
 
     date: {
       type: DataTypes.DATE,

@@ -8,14 +8,14 @@ const router = express.Router();
 router.get(
   "/",
   auth,
-  permissionsMiddleware("view_reports"),
+  permissionsMiddleware("view_counts"),
   countController.getTotals
 );
 
 router.get(
   "/financial-summary",
   auth,
-  permissionsMiddleware("view_reports"),
+  permissionsMiddleware("view_counts"),
   countController.getFinancialSummary
 );
 

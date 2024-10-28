@@ -17,6 +17,7 @@ exports.addSale = async (req, res) => {
     invoiceNumber,
     date,
     check,
+    soldBy,
   } = req.body;
 
   try {
@@ -40,6 +41,7 @@ exports.addSale = async (req, res) => {
       total_amount,
       total_paid,
       status,
+      soldBy,
       date: date && date.trim() !== "" ? new Date(date) : new Date(),
     });
 
@@ -89,7 +91,7 @@ exports.addSale = async (req, res) => {
 exports.getSales = async (req, res) => {
   try {
     const sales = await SaleItem.findAll({
-      order: [["createdAt", "DESC"]],
+      order: [["id", "DESC"]],
       include: [
         {
           model: Sale,
