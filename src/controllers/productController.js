@@ -14,6 +14,7 @@ exports.addProduct = async (req, res) => {
     sales_price,
     vendorId,
     serial_numbers,
+    soldBy,
     date,
   } = req.body;
 
@@ -27,6 +28,7 @@ exports.addProduct = async (req, res) => {
       sales_price,
       vendorId,
       serial_numbers,
+      soldBy,
       date: date && date.trim() !== "" ? new Date(date) : new Date(),
     });
 

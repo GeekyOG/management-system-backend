@@ -27,6 +27,11 @@ const Product = sequelize.define(
       type: DataTypes.JSON, // Store array of serial numbers as JSON
       allowNull: false,
     },
+    soldBy: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Samuel Udi",
+    },
     date: {
       type: DataTypes.DATE,
       allowNull: false,
