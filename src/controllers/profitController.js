@@ -10,7 +10,6 @@ const calculateProfit = async (startDate, endDate) => {
     include: [
       {
         model: Sale,
-        order: [["date", "DESC"]],
         where: {
           status: "completed",
           date: {
@@ -26,6 +25,7 @@ const calculateProfit = async (startDate, endDate) => {
       },
       { model: Product },
     ],
+    order: [[{ model: Sale }, "date", "DESC"]],
   });
 
   // Calculate the profit by subtracting the cost from amount_paid for each sale item
