@@ -10,7 +10,7 @@ const calculateProfit = async (startDate, endDate) => {
     include: [
       {
         model: Sale,
-        order: [["id", "DESC"]],
+        order: [["date", "DESC"]],
         where: {
           status: "completed",
           date: {

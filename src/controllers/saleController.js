@@ -130,10 +130,10 @@ exports.getSaleById = async (req, res) => {
   try {
     const saleItems = await SaleItem.findAll({
       where: { saleId: id },
-      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Sale,
+          order: [["date", "DESC"]],
           include: [
             {
               model: Customer,
