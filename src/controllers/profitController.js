@@ -10,7 +10,7 @@ const calculateProfit = async (startDate, endDate) => {
     include: [
       {
         model: Sale,
-        order: [["date", "ASC"]],
+        order: [["id", "DESC"]],
         where: {
           status: "completed",
           date: {
@@ -65,6 +65,22 @@ exports.getProfit = async (req, res) => {
         start.setHours(0, 0, 0, 0);
         end = new Date();
         end.setDate(start.getDate() + 6); // End of the week
+        end.setHours(23, 59, 59, 999);
+        break;
+
+      case "month":
+        start = new Date();
+        start.setMonth(start.getMonth(), 1); // Start of the month
+        start.setHours(0, 0, 0, 0);
+        end = new Date(start.getFullYear(), start.getMonth() + 1, 0); // End of the month
+        end.setHours(23, 59, 59, 999);
+        break;
+
+      case "previousMonth":
+        start = new Date();
+        start.setMonth(start.getMonth() - 1, 1); // Start of the previous month
+        start.setHours(0, 0, 0, 0);
+        end = new Date(start.getFullYear(), start.getMonth() + 1, 0); // End of the previous month
         end.setHours(23, 59, 59, 999);
         break;
 
