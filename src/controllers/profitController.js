@@ -7,6 +7,7 @@ const Customer = require("../models/Customer");
 // Helper function to calculate total profit based on time range
 const calculateProfit = async (startDate, endDate) => {
   const sales = await SaleItem.findAll({
+    order: [["id", "DESC"]],
     include: [
       {
         model: Sale,
@@ -80,7 +81,8 @@ exports.getProfit = async (req, res) => {
         start = new Date();
         start.setMonth(start.getMonth() - 1, 1); // Start of the previous month
         start.setHours(0, 0, 0, 0);
-        end = new Date(start.getFullYear(), start.getMonth() + 1, 0); // End of the previous month
+        end = new Date(start.getFullYear(), start.getMonth() + 1, 0);
+        // end.setDate(end.getDate() - 1); // End of the previous month
         end.setHours(23, 59, 59, 999);
         break;
 

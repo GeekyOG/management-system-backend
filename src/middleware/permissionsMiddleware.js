@@ -10,7 +10,9 @@ module.exports = function (requiredPermission) {
     const token = req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
-      return res.status(401).json({ msg: "No token, authorization denied" });
+      return res
+        .status(401)
+        .json({ message: "No token, authorization denied" });
     }
 
     try {
@@ -29,7 +31,7 @@ module.exports = function (requiredPermission) {
       });
 
       if (!user) {
-        return res.status(404).json({ msg: "User not found" });
+        return res.status(404).json({ message: "User not found" });
       }
 
       // Check if the required permission exists for the role
@@ -38,14 +40,14 @@ module.exports = function (requiredPermission) {
       );
 
       if (!hasPermission) {
-        return res.status(403).json({ msg: "Permission denied" });
+        return res.status(403).json({ message: "Permission denied" });
       }
 
       // If the user has the required permission, proceed to the next middleware
       next();
     } catch (err) {
       console.log(err);
-      return res.status(403).json({ msg: "Token is not valid" });
+      return res.status(403).json({ message: "Token is not valid" });
     }
   };
 };
