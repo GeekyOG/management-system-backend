@@ -11,6 +11,7 @@ const countRoutes = require("./routes/count");
 const roleRoutes = require("./routes/roleRoutes");
 const userRoutes = require("./routes/userRoutes");
 const profitRoutes = require("./routes/profitRoutes");
+const expenseRoutes = require("./routes/expenses");
 const sequelize = require("./config/database");
 
 const {
@@ -48,6 +49,7 @@ app.use("/api/counts", countRoutes);
 app.use("/api/admin", userRoutes);
 app.use("/api/roles", roleRoutes);
 app.use("/api/profits", profitRoutes);
+app.use("/api/expenses", expenseRoutes);
 
 // Sync database and start server
 sequelize
