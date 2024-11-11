@@ -36,7 +36,6 @@ exports.getExpense = async (req, res) => {
       case "day":
         start = new Date();
         start.setHours(0, 0, 0, 0); // Start of the day
-        end.setDate(start.getDate() - 1);
         end = new Date();
         end.setHours(23, 59, 59, 999); // End of the day
 
