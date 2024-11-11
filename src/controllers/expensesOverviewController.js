@@ -36,10 +36,9 @@ exports.getExpense = async (req, res) => {
       case "day":
         start = new Date();
         start.setHours(0, 0, 0, 0); // Start of the day
-        start = convertToUTC(start);
         end = new Date();
         end.setHours(23, 59, 59, 999); // End of the day
-        end = convertToUTC(end);
+
         break;
 
       case "week":
