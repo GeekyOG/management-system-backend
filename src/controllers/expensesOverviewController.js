@@ -15,7 +15,7 @@ const calculateExpense = async (startDate, endDate) => {
   // Calculate the profit by subtracting the cost from amount_paid for each sale item
   const totalExpense = expenses.reduce((acc, item) => {
     const expense = item.amount;
-    return acc + expense;
+    return parseInt(acc) + parseInt(expense);
   }, 0);
 
   return { totalExpense, expenses };
@@ -36,6 +36,7 @@ exports.getExpense = async (req, res) => {
       case "day":
         start = new Date();
         start.setHours(0, 0, 0, 0); // Start of the day
+        end.setDate(start.getDate() - 1);
         end = new Date();
         end.setHours(23, 59, 59, 999); // End of the day
 
