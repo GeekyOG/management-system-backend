@@ -21,7 +21,11 @@ const Product = sequelize.define(
     },
     size: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     serial_numbers: {
       type: DataTypes.JSON, // Store array of serial numbers as JSON
